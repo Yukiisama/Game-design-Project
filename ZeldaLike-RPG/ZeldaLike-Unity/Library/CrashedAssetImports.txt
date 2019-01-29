@@ -1,5 +1,0 @@
-Assets/Palettes/Cliff.prefab
-Assets/Palettes/DungeonGround.prefab
-Assets/Palettes/DungeonWater.prefab
-Assets/Palettes/Tree.prefab
-Assets/Prefabs/EmptyWorld.prefab
