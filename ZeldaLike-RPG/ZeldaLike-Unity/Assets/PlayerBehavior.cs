@@ -13,6 +13,12 @@ public enum CardinalDirections { CARDINAL_S, CARDINAL_N, CARDINAL_W, CARDINAL_E 
 
 public class PlayerBehavior : MonoBehaviour
 {
+    public float maxHealth = 3f;
+    public float health = 3f;
+    private bool canTakeDamages;
+
+    public Vector2 spawn = new Vector2(0, 0);
+
     public float m_speed = 1f; // Speed of the player when he moves
     private CardinalDirections m_direction; // Current facing direction of the player
 
@@ -37,6 +43,8 @@ public class PlayerBehavior : MonoBehaviour
         m_renderer = gameObject.GetComponent<SpriteRenderer>();
 
         m_closestNPCDialog = null;
+
+        canTakeDamages = true;
     }
 
     // This update is called at a very precise and constant FPS, and
@@ -174,6 +182,45 @@ public class PlayerBehavior : MonoBehaviour
         }
     }
 
+    // Player is pushed
+    private void push(Vector3 enemyPosition)
+    {
+        float pushPower = 30000f;
+
+        print("enemy position : (" + enemyPosition.x + ", " + enemyPosition.y + ")\n");
+        float xPush = (enemyPosition.x < transform.position.x) ? 1 : -1;
+        float yPush = (enemyPosition.y < transform.position.y) ? 1 : -1;
+
+        // Pushes the player to a new position, given a power.
+        Vector2 newPos = new Vector2(transform.position.x + xPush * pushPower,
+                                     transform.position.y + yPush * pushPower);
+        m_rb2D.AddForce(newPos);
+        print("pouf\n");
+    }
+
+    // Player takes damages
+    private void takeDamages(int damages)
+    {
+        health -= damages;
+    }
+
+    // Player dies
+    private void death()
+    {
+        print("you died\n");
+        transform.position = spawn;
+        //m_rb2D.MovePosition(spawn);
+        health = maxHealth;
+    }
+
+    // When Player is attacked
+    private void attack(Vector3 enemyPosition, int damages)
+    {
+        push(enemyPosition);
+        if (health > 0) takeDamages(damages);
+        if (health <= 0) death();
+        canTakeDamages = false;
+    }
 
     // This is automatically called by Unity when the gameObject (here the player)
     // enters a trigger zone. Here, two solutions
@@ -186,6 +233,7 @@ public class PlayerBehavior : MonoBehaviour
         if (collision.tag == "NPC")
         {
             m_closestNPCDialog = collision.GetComponent<Dialog>();
+            if (canTakeDamages) attack(collision.transform.position, 1);
         }
         else if (collision.tag == "InstantDialog")
         {
@@ -207,6 +255,7 @@ public class PlayerBehavior : MonoBehaviour
         if (collision.tag == "NPC")
         {
             m_closestNPCDialog = null;
+            canTakeDamages = true;
         }
         else if (collision.tag == "InstantDialog")
         {
