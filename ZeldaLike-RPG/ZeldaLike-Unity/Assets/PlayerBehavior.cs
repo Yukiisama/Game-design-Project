@@ -16,7 +16,7 @@ public class PlayerBehavior : MonoBehaviour
     public float maxHealth = 3f;
     public float health = 3f;
     private bool canTakeDamages;
-
+    public float damage = 6f;
     public Vector2 spawn = new Vector2(0, 0);
 
     public float m_speed = 1f; // Speed of the player when he moves
@@ -233,7 +233,7 @@ public class PlayerBehavior : MonoBehaviour
         if (collision.tag == "NPC")
         {
             m_closestNPCDialog = collision.GetComponent<Dialog>();
-            if (canTakeDamages) attack(collision.transform.position, 1);
+            if (canTakeDamages) attack(collision.transform.position, 10);
         }
         else if (collision.tag == "InstantDialog")
         {

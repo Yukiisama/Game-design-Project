@@ -28,7 +28,7 @@ public class PlayerInventory : MonoBehaviour
     float maxDamage = 0;
     float maxArmor = 0;
 
-    public float currentHealth = 60;
+    public float currentHealth = 100;
     float currentMana = 100;
     float currentDamage = 0;
     float currentArmor = 0;
@@ -184,6 +184,8 @@ public class PlayerInventory : MonoBehaviour
             characterSystemInventory = characterSystem.GetComponent<Inventory>();
         if (craftSystem != null)
             craftSystemInventory = craftSystem.GetComponent<Inventory>();
+       
+        
     }
 
     //void UpdateHPBar()
@@ -203,14 +205,16 @@ public class PlayerInventory : MonoBehaviour
 
     public void OnConsumeItem(Item item)
     {
+        GameObject Player = GameObject.Find("Player");
+        PlayerBehavior playerScript = Player.GetComponent<PlayerBehavior>();
         for (int i = 0; i < item.itemAttributes.Count; i++)
         {
             if (item.itemAttributes[i].attributeName == "Health")
             {
                 if ((currentHealth + item.itemAttributes[i].attributeValue) > maxHealth)
-                    currentHealth = maxHealth;
+                    playerScript.health = maxHealth;
                 else
-                    currentHealth += item.itemAttributes[i].attributeValue;
+                    playerScript.health += item.itemAttributes[i].attributeValue;
             }
             if (item.itemAttributes[i].attributeName == "Mana")
             {
@@ -229,9 +233,9 @@ public class PlayerInventory : MonoBehaviour
             if (item.itemAttributes[i].attributeName == "Damage")
             {
                 if ((currentDamage + item.itemAttributes[i].attributeValue) > maxDamage)
-                    currentDamage = maxDamage;
+                    playerScript.damage = maxDamage;
                 else
-                    currentDamage += item.itemAttributes[i].attributeValue;
+                    playerScript.damage += item.itemAttributes[i].attributeValue;
             }
         }
         //if (HPMANACanvas != null)
